@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+}
+
+model wallet {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  name String
+  currency String
+  method String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model category {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  name String
+  kind String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model entry {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  wallet_id String @db.Uuid
+  category_id String? @db.Uuid
+  kind String
+  amount BigInt
+  occurred_on String
+  transfer_id String? @db.Uuid
+  payment_id String? @db.Uuid
+  skill_id String? @db.Uuid
+  note String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model transfer {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  from_wallet_id String @db.Uuid
+  to_wallet_id String @db.Uuid
+  amount BigInt
+  occurred_on String
+  out_id String @db.Uuid
+  in_id String @db.Uuid
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model budget {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  category_id String @db.Uuid
+  month String
+  limit BigInt
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, category_id, month])
+}
+
+model budget_alert {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  budget_id String @db.Uuid
+  month String
+  level Int
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, budget_id, month, level])
+}
+
+model skill {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  name String
+  goal String
+  weekly_minutes Int
+  course_cost BigInt
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model milestone {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  skill_id String @db.Uuid
+  title String
+  completed Boolean
+  weight Int
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model study_session {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  skill_id String @db.Uuid
+  started_at String
+  minutes Int
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model loan {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  name String
+  lender_type String
+  lender_name String
+  principal BigInt
+  interest BigInt
+  remainder BigInt
+  annual_rate_bps Int
+  accrued_on String
+  status String
+  schedule_json String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model loan_payment {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  loan_id String @db.Uuid
+  wallet_id String @db.Uuid
+  category_id String @db.Uuid
+  amount BigInt
+  principal BigInt
+  interest BigInt
+  paid_on String
+  expense_id String @db.Uuid
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model note {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  content String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model setting {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  key String
+  value_json String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, key])
+}
+
+model reminder {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  kind String
+  target_id String? @db.Uuid
+  due_on String?
+  time_local String
+  zone String
+  quiet_start String
+  quiet_end String
+  enabled Boolean
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model device {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  token String
+  enabled Boolean
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model reminder_log {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  reminder_id String @db.Uuid
+  occurrence String
+  status String
+  attempts Int
+  next_attempt_at String
+  lease_until String?
+  ticket_id String?
+  expires_at String
+  device_id String @db.Uuid
+  message_json String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, reminder_id, occurrence, device_id])
+}
+
+model snapshot {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  day String
+  assets BigInt
+  liabilities BigInt
+  net BigInt
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, day])
+}
+
+model sync_state {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  sequence BigInt
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id])
+}
+
+model sync_change {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  sequence BigInt
+  table_name String
+  row_id String @db.Uuid
+  record_json String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+  @@unique([user_id, sequence])
+}
+
+model sync_receipt {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  fingerprint String
+  result_json String
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}
+
+model sync_conflict {
+  id String @db.Uuid @id
+  user_id String @db.Uuid
+  updated_at String
+  version Int
+  deleted_at String?
+  table_name String
+  row_id String @db.Uuid
+  server_json String
+  client_json String
+  resolved Boolean
+  @@unique([user_id, id])
+  @@index([user_id, updated_at])
+}

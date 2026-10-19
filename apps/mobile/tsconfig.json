@@ -1,0 +1,19 @@
+{
+  "extends": "./node_modules/expo/tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "noUncheckedIndexedAccess": true,
+    "types": [
+      "node",
+      "react"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../../src/core/**/*.ts",
+    "../../src/mobile/**/*.ts",
+    "../../src/shared/**/*.ts"
+  ]
+}
