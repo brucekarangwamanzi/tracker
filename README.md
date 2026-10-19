@@ -18,6 +18,8 @@ For native development, run `npm run mobile`. Sample mode can be explored in Exp
 
 For hosting and Android home-screen installation, see [install on Android and use offline](docs/HOSTING.md). The root `vercel.json` configures the web build and SQLite isolation headers. Website hosting alone does not enable cloud backup or synchronization.
 
+For a downloadable Android APK or an iPhone app through TestFlight, see [native app builds](docs/NATIVE-APPS.md).
+
 ## How it fits together
 
 ```mermaid
