@@ -9,3 +9,4 @@ coverage/
 
 .expo/
 apps/mobile/dist-all/
+.vercel/

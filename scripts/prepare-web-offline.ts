@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {readdir, readFile, writeFile} from 'node:fs/promises';
+import {copyFile, readdir, readFile, writeFile} from 'node:fs/promises';
 import {dirname, join, relative, resolve} from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
@@ -8,9 +8,11 @@ export async function prepareWebOffline(root = resolve(project, 'apps/mobile/dis
   const index = join(root, 'index.html');
   let html = await readFile(index, 'utf8');
   if (!html.includes('rel="manifest"')) html = html.replace('</head>', '<link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0C1424"></head>');
+  if (!html.includes('rel="apple-touch-icon"')) html = html.replace('</head>', '<link rel="apple-touch-icon" href="/app-icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"></head>');
   await writeFile(index, html);
+  for (const size of [180, 192, 512]) await copyFile(join(project, `apps/mobile/assets/pwa-${size}.png`), join(root, `app-icon-${size}.png`));
   await writeFile(join(root, 'app-icon.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0C1424"/><path d="M162 126h103c77 0 109 33 109 75 0 30-17 50-40 60 32 12 50 36 50 69 0 50-40 82-113 82H162zm63 55v59h39c29 0 46-10 46-30s-15-29-44-29zm0 111v65h46c32 0 49-11 49-33 0-21-16-32-49-32z" fill="#77E3B2"/></svg>');
-  await writeFile(join(root, 'manifest.webmanifest'), JSON.stringify({id: '/', name: 'Bruce’s Life', short_name: 'Bruce’s Life', start_url: '/', scope: '/', display: 'standalone', orientation: 'portrait', theme_color: '#0C1424', background_color: '#0C1424', icons: [{src: '/app-icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any'}]}, null, 2));
+  await writeFile(join(root, 'manifest.webmanifest'), JSON.stringify({id: '/', name: 'Bruce’s Life', short_name: 'Bruce’s Life', description: 'Track your learning, money and loans, even offline.', start_url: '/', scope: '/', display: 'standalone', orientation: 'portrait', theme_color: '#0C1424', background_color: '#0C1424', icons: [192, 512].map(size => ({src: `/app-icon-${size}.png`, sizes: `${size}x${size}`, type: 'image/png', purpose: 'any'}))}, null, 2));
   async function walk(directory: string): Promise<string[]> {
     const paths: string[] = [];
     for (const entry of await readdir(directory, {withFileTypes: true})) {

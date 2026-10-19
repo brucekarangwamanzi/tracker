@@ -16,6 +16,8 @@ Open **http://localhost:8080** and choose **Try with sample data**. No account o
 
 For native development, run `npm run mobile`. Sample mode can be explored in Expo Go; private native records require a custom SQLCipher-enabled build. See [mobile setup, behavior, and limitations](docs/MOBILE.md).
 
+For hosting and Android home-screen installation, see [install on Android and use offline](docs/HOSTING.md). The root `vercel.json` configures the web build and SQLite isolation headers. Website hosting alone does not enable cloud backup or synchronization.
+
 ## How it fits together
 
 ```mermaid

@@ -66,6 +66,13 @@ describe('offline exported app', () => {
       expect(first.files).toEqual(expect.arrayContaining(['/index.html', '/assets/sqlite.wasm', '/assets/worker.js', '/manifest.webmanifest']));
       expect(first.files).not.toContain('/sw.js');
       expect(await readFile(join(root, 'index.html'), 'utf8')).toContain('rel="manifest"');
+      expect(await readFile(join(root, 'index.html'), 'utf8')).toContain('rel="apple-touch-icon"');
+      const manifest = JSON.parse(await readFile(join(root, 'manifest.webmanifest'), 'utf8'));
+      expect(manifest.icons.map((icon: {sizes: string}) => icon.sizes)).toEqual(['192x192', '512x512']);
+      for (const size of [180, 192, 512]) {
+        expect(first.files).toContain(`/app-icon-${size}.png`);
+        expect((await readFile(join(root, `app-icon-${size}.png`))).subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+      }
       await writeFile(join(root, 'assets/app.js'), '/* new app */');
       expect((await prepareWebOffline(root)).cache).not.toBe(first.cache);
     } finally {await rm(root, {recursive: true, force: true});}

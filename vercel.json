@@ -1,0 +1,29 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm ci && npm --prefix apps/mobile ci",
+  "buildCommand": "npm run mobile:build",
+  "outputDirectory": "apps/mobile/dist",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {"key": "Cross-Origin-Opener-Policy", "value": "same-origin"},
+        {"key": "Cross-Origin-Embedder-Policy", "value": "require-corp"},
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "Cache-Control", "value": "public, max-age=0, must-revalidate"}
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {"key": "Cache-Control", "value": "no-store"},
+        {"key": "Service-Worker-Allowed", "value": "/"}
+      ]
+    }
+  ],
+  "rewrites": [
+    {"source": "/:screen(skills|money|loans|more|settings|review|roi|reminders|sync-issues|add-skill|add-study|add-transaction|transfer|budget|planner|add-loan|pay-loan)", "destination": "/index.html"},
+    {"source": "/:screen(skill|loan|entry|reminder)/:id", "destination": "/index.html"}
+  ]
+}
